@@ -1,20 +1,81 @@
 # AI Research Agent
 
-An intelligent multi-phase research agent that conducts comprehensive research using web search, academic papers, and document analysis. Built with Google Gemini AI and featuring a beautiful Streamlit interface.
+A multi-phase research agent **built from scratch in Python** with no orchestration frameworks. Implements key agentic design patterns—**planning**, **tool use**, and **reflection**.
 
-## Features
+**Key Highlights**:
+- 🎯 **Planning Pattern** - Decomposes queries into focused research angles
+- 🔧 **Tool Use Pattern** - Multi-turn function calling with web search, arXiv, and URL fetching
+- 🔄 **Reflection Pattern** - Self-validates completeness and loops back if needed
+- 👤 **Human-in-the-Loop** - Interactive clarification when queries are ambiguous
+- 💻 **Real-Time UI** - Beautiful Streamlit interface with live progress tracking
 
-- **5-Phase Research Workflow:**
-  1. **Query Understanding** - Analyzes and clarifies your research question
-  2. **Clarification** - Interactive questions for ambiguous queries (human-in-the-loop)
-  3. **Research Planning** - Creates multiple research angles
-  4. **Execution** - Investigates each angle using AI tools
-  5. **Reflection** - Validates research completeness
-  6. **Report Synthesis** - Generates comprehensive markdown reports
+## Architecture
 
-- **Multi-Source Research** - Web search (Tavily), arXiv papers, URL fetching with JS rendering support
-- **Real-Time UI** - See each phase running, tool calls being made, and progress updates
-- **Production-Ready** - Proper configuration, error handling, and safety limits
+### 5-Phase Research Workflow
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│  User Query                                                         │
+└────────────────────────────┬────────────────────────────────────────┘
+                             ↓
+                    ┌─────────────────────┐
+                    │  Phase 1:           │
+                    │  Understanding      │
+                    │  Query              │
+                    └──────────┬──────────┘
+                               ↓
+                      ┌────────┴─────────┐
+                      │ Needs            │
+                      │ Clarification?   │
+                      └────┬─────────┬───┘
+                       YES │         │ NO
+                           ↓         ↓
+                  ┌────────────┐    │
+                  │  Phase 1.1:│    │
+                  │  Human-in- │    │
+                  │  the-Loop  │    │
+                  │  Clarify   │    │
+                  └──────┬─────┘    │
+                         ↓          │
+                    ┌────┴──────────┘
+                    ↓
+           ┌─────────────────────┐
+           │  Phase 2:           │
+           │  Research Planning  │
+           │  (3-6 angles)       │
+           └──────────┬──────────┘
+                      ↓
+           ┌─────────────────────┐
+           │  Phase 3:           │◄──────────┐
+           │  Research Execution │           │
+           │  (Tool Calling Loop)│           │
+           └──────────┬──────────┘           │
+                      ↓                      │
+           ┌─────────────────────┐           │
+           │  Phase 4:           │           │
+           │  Reflection &       │           │
+           │  Validation         │           │
+           └──────────┬──────────┘           │
+                      ↓                      │
+              ┌───────┴────────┐             │
+              │ Is Research    │             │
+              │ Sufficient?    │             │
+              └───┬────────┬───┘             │
+              YES │        │ NO              │
+                  │        └─────────────────┘
+                  │          Generate new angles
+                  ↓
+           ┌─────────────────────┐
+           │  Phase 5:           │
+           │  Final Report       │
+           │  Synthesis          │
+           └──────────┬──────────┘
+                      ↓
+              ┌──────────────┐
+              │  Markdown    │
+              │  Report      │
+              └──────────────┘
+```
 
 ## Quick Start
 
@@ -39,20 +100,33 @@ uv sync
 
 ### 3. Configuration
 
+**Note**: The `.env` file is **optional**. You can also export API keys as environment variables directly.
+
+**Option 1: Using .env file**
+
 Create a `.env` file in the project root:
 
 ```bash
 # Copy example file
 cp .env.example .env
 
-# Edit .env with your API keys (use your favorite editor)
-# .env should contain:
+# Edit .env with your API keys
 GEMINI_API_KEY=your_gemini_api_key_here
 TAVILY_API_KEY=your_tavily_api_key_here
 ```
-## Configuration Options
 
-Edit `.env` to customize behavior:
+**Option 2: Using environment variables (no .env file needed)**
+
+```bash
+export GEMINI_API_KEY=your_gemini_api_key_here
+export TAVILY_API_KEY=your_tavily_api_key_here
+```
+
+Both approaches work identically. The application will use environment variables if no `.env` file exists.
+
+#### Configuration Options
+
+Edit `.env` or export environment variables to customize behavior:
 
 ```bash
 # Required
@@ -63,52 +137,29 @@ TAVILY_API_KEY=your_key
 GEMINI_MODEL=gemini-3-flash-preview
 THINKING_LEVEL=medium
 MAX_TOOL_ITERATIONS=20
+```
 
 ### 4. Run the Application
 
 **Streamlit Web Interface (Recommended):**
 ```bash
+# With .env file:
 streamlit run streamlit_app.py
+
+# Or with environment variables:
+GEMINI_API_KEY=your_key TAVILY_API_KEY=your_key streamlit run streamlit_app.py
 ```
 
 The app will open in your browser at `http://localhost:8501`
 
 **CLI Mode:**
 ```bash
+# With .env file:
 python main.py
+
+# Or with environment variables:
+GEMINI_API_KEY=your_key TAVILY_API_KEY=your_key python main.py
 ```
-
-## Deployment
-
-### Streamlit Cloud (Recommended)
-
-1. **Push to GitHub**
-   ```bash
-   git init
-   git add .
-   git commit -m "Production-ready research agent"
-   git remote add origin <your-github-repo-url>
-   git push -u origin main
-   ```
-
-2. **Deploy to Streamlit Cloud**
-   - Go to [share.streamlit.io](https://share.streamlit.io)
-   - Click "New app"
-   - Select your GitHub repository
-   - Set main file path: `streamlit_app.py`
-   - Click "Deploy"
-
-3. **Configure Secrets**
-   - In Streamlit Cloud dashboard, go to App Settings → Secrets
-   - Add:
-   ```toml
-   GEMINI_API_KEY = "your_actual_key_here"
-   TAVILY_API_KEY = "your_actual_key_here"
-   ```
-   - Save and restart the app
-
-4. **Share Your App**
-   - Your app will be available at: `https://your-app-name.streamlit.app`
 
 ## License
 

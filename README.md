@@ -143,22 +143,14 @@ MAX_TOOL_ITERATIONS=20
 
 **Streamlit Web Interface (Recommended):**
 ```bash
-# With .env file:
 streamlit run streamlit_app.py
-
-# Or with environment variables:
-GEMINI_API_KEY=your_key TAVILY_API_KEY=your_key streamlit run streamlit_app.py
 ```
 
 The app will open in your browser at `http://localhost:8501`
 
 **CLI Mode:**
 ```bash
-# With .env file:
 python main.py
-
-# Or with environment variables:
-GEMINI_API_KEY=your_key TAVILY_API_KEY=your_key python main.py
 ```
 
 ## License

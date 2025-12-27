@@ -1,0 +1,13 @@
+# Core dependencies
+beautifulsoup4>=4.14.3
+requests>=2.32.5
+pymupdf>=1.26.7
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Streamlit frontend
+streamlit>=1.40.0
+
+# Optional but recommended
+lxml>=5.3.0

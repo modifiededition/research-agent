@@ -1,0 +1,30 @@
+# macOS
+.DS_Store
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# Reports output
+reports/
+*.md
+!README.md
+
+# Streamlit cache
+.streamlit/
+!.streamlit/config.toml
+!.streamlit/secrets.toml.example
+
+# notebooks
+notebooks/
